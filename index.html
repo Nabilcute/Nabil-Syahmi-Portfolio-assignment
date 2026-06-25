@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ItzBillz · Life Of Nabil Syahmi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            width: 100%; height: 100%;
+            background-color: #0a0a0a;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #fff; overflow: hidden;
+        }
+
+        .progress-bar {
+            position: fixed; top: 0; left: 0; height: 3px;
+            background: linear-gradient(90deg, #fff, #888);
+            width: 0%; z-index: 999; border-radius: 0 4px 4px 0;
+            box-shadow: 0 0 12px rgba(255,255,255,0.3);
+            pointer-events: none; transition: width 0.4s ease;
+        }
+
+        .top-nav {
+            position: fixed; top: 0; left: 0; right: 0;
+            display: flex; justify-content: center; gap: 3.5rem;
+            padding: 1.2rem 2rem; z-index: 900;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, transparent 100%);
+            flex-wrap: wrap;
+        }
+        .top-nav a {
+            color: rgba(255,255,255,0.85); text-decoration: none;
+            font-size: 0.9rem; font-weight: 500; letter-spacing: 0.06em;
+            text-transform: uppercase; transition: color 0.2s, border-color 0.2s;
+            padding: 0.2rem 0; border-bottom: 2px solid transparent;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+        }
+        .top-nav a:hover { color: #fff; border-bottom-color: #fff; }
+
+        #app { height: 100vh; overflow: hidden; position: relative; }
+
+        #sections-wrap {
+            position: absolute; top: 0; left: 0; width: 100%;
+            will-change: transform;
+        }
+
+        .section-card {
+            height: 100vh; width: 100%;
+            display: flex; flex-direction: column; justify-content: center;
+            background-color: #111;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            position: relative; overflow: hidden;
+        }
+
+        /* Background image layers */
+        .bg-layer {
+            position: absolute; inset: 0;
+            background-size: cover; background-position: center;
+            z-index: 0;
+        }
+        .bg-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.45) 100%);
+            z-index: 1; pointer-events: none;
+        }
+        .section-card > *:not(.bg-layer):not(.bg-overlay) { position: relative; z-index: 2; }
+
+        /* HERO */
+        .hero-card {
+            background-image: url('images/nabil_1.png');
+            background-size: cover; background-position: center;
+            justify-content: center; align-items: center; text-align: center;
+            border: none; isolation: isolate;
+        }
+        .hero-card::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 100%);
+            z-index: 0; pointer-events: none;
+        }
+        .hero-card > * { position: relative; z-index: 1; }
+
+        .hero-content {
+            display: flex; align-items: center; justify-content: space-between;
+            width: 100%; padding: 0 1rem; margin-top: 3rem;
+        }
+        .life-of {
+            font-size: clamp(3rem, 6vw, 4.8rem); font-weight: 600;
+            letter-spacing: -0.02em; color: #fff; text-transform: uppercase;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.7);
+        }
+        .right-name {
+            font-size: clamp(3rem, 7vw, 5.8rem); font-weight: 700;
+            letter-spacing: -0.02em; color: #fff; text-transform: uppercase;
+            text-shadow: 0 4px 30px rgba(0,0,0,0.8);
+        }
+
+        .scroll-hint {
+            position: absolute; bottom: 2rem; left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.4); font-size: 0.75rem;
+            letter-spacing: 0.06em; text-transform: uppercase;
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            pointer-events: none; z-index: 2;
+        }
+        .scroll-hint i { font-size: 1.2rem; animation: bounce 1.6s ease-in-out infinite; }
+        @keyframes bounce {
+            0%,100% { transform: translateY(0); opacity: 0.4; }
+            50% { transform: translateY(6px); opacity: 0.9; }
+        }
+
+        /* ABOUT multi-page */
+        #about { padding: 0; }
+        .about-pages { position: relative; width: 100%; height: 100%; }
+        .about-page {
+            position: absolute; inset: 0; padding: 4rem 3rem;
+            display: flex; flex-direction: column; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+        }
+        .about-page.active { opacity: 1; pointer-events: auto; }
+
+        .about-dots {
+            position: absolute; bottom: 1.8rem; left: 50%;
+            transform: translateX(-50%);
+            display: flex; gap: 8px; z-index: 5;
+        }
+        .about-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: rgba(255,255,255,0.25);
+            transition: background 0.3s, transform 0.3s;
+        }
+        .about-dot.active { background: #fff; transform: scale(1.3); }
+
+        .about-page-label {
+            font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+            color: #555; margin-bottom: 0.6rem;
+        }
+
+        /* Shared */
+        .section-title {
+            font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 600;
+            letter-spacing: -0.02em; margin-bottom: 1.5rem;
+            color: #fff; text-transform: uppercase;
+        }
+        .section-title span { color: #888; font-weight: 300; }
+
+        .section-divider {
+            width: 60px; height: 3px;
+            background: linear-gradient(90deg, #fff, #555);
+            margin-bottom: 2rem; border-radius: 4px;
+        }
+
+        .about-text {
+            max-width: 800px; font-size: clamp(1rem, 1.2vw, 1.2rem);
+            line-height: 1.9; color: #cdcdcd; margin-bottom: 1.2rem;
+        }
+        .about-text strong { color: #fff; font-weight: 500; }
+
+        .about-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 2rem; margin-top: 1rem; max-width: 800px;
+        }
+        .about-grid-item { border-left: 2px solid #333; padding-left: 1.2rem; }
+        .about-grid-item .number { font-size: 2rem; font-weight: 600; color: #fff; display: block; }
+        .about-grid-item .label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: #888; }
+
+        .tag-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem; max-width: 700px; }
+        .tag {
+            background: #1e1e1e; border: 1px solid #2e2e2e;
+            padding: 0.4rem 1rem; border-radius: 40px;
+            font-size: 0.85rem; color: #bbb; letter-spacing: 0.02em;
+        }
+
+        .values-list { list-style: none; max-width: 700px; }
+        .values-list li {
+            padding: 0.75rem 1rem; margin-bottom: 0.5rem;
+            background: #191919; border-radius: 8px;
+            border-left: 3px solid #333; color: #ccc; font-size: 1rem;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .values-list li i { color: #666; font-size: 1rem; }
+
+        /* Skill bars */
+        .skill-list { max-width: 680px; width: 100%; }
+        .skill-row { margin-bottom: 1.2rem; }
+        .skill-meta { display: flex; justify-content: space-between; margin-bottom: 6px; }
+        .skill-name { font-size: 0.95rem; color: #ccc; }
+        .skill-pct { font-size: 0.85rem; color: #666; }
+        .skill-track {
+            height: 4px; background: #222; border-radius: 4px; overflow: hidden;
+        }
+        .skill-fill {
+            height: 100%; width: 0;
+            background: linear-gradient(90deg, #fff, #888);
+            border-radius: 4px;
+            transition: width 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .skill-fill.animate { width: var(--w); }
+
+        /* Timeline (for Background section) */
+        .bg-pages { position: relative; width: 100%; height: 100%; }
+        .bg-page {
+            position: absolute; inset: 0; padding: 4rem 3rem;
+            display: flex; flex-direction: column; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+        }
+        .bg-page.active { opacity: 1; pointer-events: auto; }
+
+        .bg-dots {
+            position: absolute; bottom: 1.8rem; left: 50%;
+            transform: translateX(-50%);
+            display: flex; gap: 8px; z-index: 5;
+        }
+        .bg-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: rgba(255,255,255,0.25);
+            transition: background 0.3s, transform 0.3s;
+        }
+        .bg-dot.active { background: #fff; transform: scale(1.3); }
+
+        .bg-page-label {
+            font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+            color: #555; margin-bottom: 0.6rem;
+        }
+
+        .timeline { list-style: none; max-width: 720px; padding: 0; }
+        .timeline li {
+            display: flex; gap: 1.5rem;
+            padding-bottom: 1.6rem; position: relative;
+        }
+        .timeline li:last-child { padding-bottom: 0; }
+        .timeline li::before {
+            content: ''; position: absolute;
+            left: 11px; top: 24px; bottom: 0;
+            width: 1px; background: #2a2a2a;
+        }
+        .timeline li:last-child::before { display: none; }
+        .tl-dot {
+            width: 24px; height: 24px; border-radius: 50%;
+            background: #1e1e1e; border: 2px solid #444;
+            flex-shrink: 0; margin-top: 2px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .tl-dot i { font-size: 0.6rem; color: #888; }
+        .tl-body { flex: 1; }
+        .tl-year {
+            font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase;
+            color: #666; margin-bottom: 3px;
+        }
+        .tl-title { font-size: 1rem; font-weight: 500; color: #fff; margin-bottom: 3px; }
+        .tl-sub { font-size: 0.9rem; color: #888; margin-bottom: 4px; }
+        .tl-desc { font-size: 0.88rem; color: #666; line-height: 1.6; }
+
+        .placeholder-content { font-size: 1.1rem; color: #aaa; max-width: 700px; line-height: 1.7; }
+        .placeholder-content i { color: #555; margin-right: 0.5rem; }
+        .placeholder-content p { margin-bottom: 0.8rem; }
+
+        /* Friends collage — full bleed, no padding on section */
+        #friends { padding: 0 !important; }
+
+        .collage {
+            position: absolute; inset: 0;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 3px;
+        }
+
+        /* Varied sizes via spanning */
+        .collage-item:nth-child(1) { grid-column: 1 / 3; grid-row: 1 / 2; }
+        .collage-item:nth-child(2) { grid-column: 3 / 4; grid-row: 1 / 2; }
+        .collage-item:nth-child(3) { grid-column: 4 / 5; grid-row: 1 / 3; }
+        .collage-item:nth-child(4) { grid-column: 1 / 2; grid-row: 2 / 3; }
+        .collage-item:nth-child(5) { grid-column: 2 / 3; grid-row: 2 / 3; }
+        .collage-item:nth-child(6) { grid-column: 3 / 4; grid-row: 2 / 3; }
+
+        .collage-item {
+            position: relative; overflow: hidden;
+            background: #1a1a1a;
+            cursor: default;
+        }
+
+        .collage-item img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease, filter 0.5s ease;
+            filter: brightness(0.85);
+            display: block;
+        }
+        .collage-item:hover img {
+            transform: scale(1.05);
+            filter: brightness(1);
+        }
+
+        /* Placeholder when no image set */
+        .collage-item .photo-placeholder {
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 10px;
+            background: #161616;
+            color: #333; font-size: 0.75rem;
+            letter-spacing: 0.05em; text-transform: uppercase;
+        }
+        .collage-item .photo-placeholder i { font-size: 1.6rem; color: #2a2a2a; }
+
+        /* Name overlay on hover */
+        .collage-item .friend-name {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            padding: 2rem 1.2rem 1rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%);
+            color: #fff; font-size: 1rem; font-weight: 500;
+            letter-spacing: 0.02em;
+            opacity: 0; transform: translateY(6px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .collage-item:hover .friend-name { opacity: 1; transform: translateY(0); }
+
+        /* Friends title overlay — top left */
+        .friends-header {
+            position: absolute; top: 0; left: 0; right: 0;
+            padding: 1.5rem 2rem;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.65) 0%, transparent 100%);
+            z-index: 5; pointer-events: none;
+        }
+        .friends-header .section-title { margin-bottom: 0; font-size: clamp(1.8rem, 3vw, 2.5rem); }
+        .friends-header .section-divider { margin-bottom: 0; margin-top: 0.5rem; }
+
+        .achievement-list { max-width: 700px; list-style: none; padding: 0; }
+        .achievement-list li {
+            padding: 0.8rem 1.2rem; margin-bottom: 0.6rem;
+            background: #1a1a1a; border-radius: 8px;
+            border-left: 3px solid #555; color: #ddd; font-size: 1.05rem;
+        }
+
+        /* Contact section */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.2rem;
+            width: 100%; max-width: 900px;
+        }
+
+        .contact-card {
+            position: relative;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 1rem; padding: 2.8rem 1rem;
+            border-radius: 16px;
+            background: #161616;
+            border: 1px solid #252525;
+            text-decoration: none; color: #888;
+            overflow: hidden; cursor: pointer;
+            transition: color 0.35s ease, border-color 0.35s ease, transform 0.3s ease, box-shadow 0.35s ease;
+        }
+
+        .contact-card::before {
+            content: ''; position: absolute; inset: 0;
+            opacity: 0; border-radius: inherit;
+            transition: opacity 0.4s ease; z-index: 0;
+        }
+        .contact-card > * { position: relative; z-index: 1; }
+
+        .contact-card.whatsapp::before  { background: radial-gradient(ellipse at center, rgba(37,211,102,0.2) 0%, transparent 70%); }
+        .contact-card.email::before     { background: radial-gradient(ellipse at center, rgba(234,67,53,0.2) 0%, transparent 70%); }
+        .contact-card.instagram::before { background: radial-gradient(ellipse at 50% 60%, rgba(193,53,132,0.25) 0%, rgba(224,103,59,0.15) 50%, transparent 70%); }
+        
+
+        .contact-card:hover { transform: translateY(-5px); }
+        .contact-card:hover::before { opacity: 1; }
+
+        .contact-card.whatsapp:hover  { color: #25d366; border-color: rgba(37,211,102,0.4);  box-shadow: 0 10px 40px rgba(37,211,102,0.12); }
+        .contact-card.email:hover     { color: #ea4335; border-color: rgba(234,67,53,0.4);   box-shadow: 0 10px 40px rgba(234,67,53,0.12); }
+        .contact-card.instagram:hover { color: #e1306c; border-color: rgba(193,53,132,0.4);  box-shadow: 0 10px 40px rgba(193,53,132,0.15); }
+
+        .card-icon {
+            font-size: 2.2rem; color: #444;
+            transition: color 0.35s ease;
+        }
+        .contact-card.instagram .card-icon { transition: color 0.35s ease, -webkit-text-fill-color 0.35s ease; }
+
+        .contact-card.whatsapp:hover  .card-icon { color: #25d366; }
+        .contact-card.email:hover     .card-icon { color: #ea4335; }
+        .contact-card.resume:hover    .card-icon { color: #fff; }
+        .contact-card.instagram:hover .card-icon {
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+
+        .card-label {
+            font-size: 0.82rem; font-weight: 500;
+            letter-spacing: 0.08em; text-transform: uppercase;
+        }
+        .card-sub { font-size: 0.72rem; color: #3a3a3a; letter-spacing: 0.02em; transition: color 0.35s ease; }
+        .contact-card:hover .card-sub { color: currentColor; opacity: 0.6; }
+        .contact-card:active { transform: translateY(-1px) scale(0.98); }
+
+        @media (max-width: 700px) { .contact-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 380px) { .contact-grid { grid-template-columns: 1fr; } }
+
+        /* Back to top button */
+        .back-to-top {
+            position: fixed; bottom: 2rem; right: 2rem;
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.5);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 800;
+            opacity: 0; pointer-events: none;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+            backdrop-filter: blur(6px);
+        }
+        .back-to-top.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        .back-to-top:hover { background: rgba(255,255,255,0.14); color: #fff; border-color: rgba(255,255,255,0.3); }
+        .back-to-top:active { transform: scale(0.92); }
+
+        .reveal-item {
+            opacity: 0; transform: translateY(28px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .reveal-item.visible { opacity: 1; transform: translateY(0); }
+
+        .section-card:not(#about) { padding: 4rem 3rem; }
+
+        @media (max-width: 900px) {
+            .section-card:not(#about) { padding: 2.5rem 1.5rem; }
+            .about-page { padding: 2.5rem 1.5rem; }
+            .hero-content { flex-direction: column; gap: 1rem; align-items: center; text-align: center; }
+            .top-nav { gap: 2rem; }
+            .about-grid, .friend-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 550px) {
+            .section-card:not(#about) { padding: 2rem 1rem; }
+            .about-page { padding: 2rem 1rem; }
+            .top-nav { gap: 1.2rem; }
+            .top-nav a { font-size: 0.75rem; }
+            .about-grid, .friend-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+<button class="back-to-top" id="backToTop" aria-label="Back to top"><i class="fas fa-chevron-up"></i></button>
+
+<nav class="top-nav">
+    <a href="#about"        data-section="1">About</a>
+    <a href="#background"   data-section="2">Background</a>
+    <a href="#friends"      data-section="3">Friends</a>
+    <a href="#achievements" data-section="4">Achievements</a>
+    <a href="#contact"      data-section="5">Contact</a>
+</nav>
+
+<div id="app">
+  <div id="sections-wrap">
+
+    <!-- HERO — replace nabil_1.png with your photo filename -->
+    <section id="home" class="section-card hero-card">
+        <div class="hero-content">
+            <div class="left-block"><div class="life-of">Life Of</div></div>
+            <div class="right-name">Nabil Syahmi</div>
+        </div>
+        <div class="scroll-hint">
+            <i class="fas fa-chevron-down"></i>
+            <span>Scroll</span>
+        </div>
+    </section>
+
+    <!-- ABOUT — replace about_bg.jpg with your photo filename -->
+    <section id="about" class="section-card">
+        <div class="bg-layer" style="background-image: url('images/nabil_2.jpeg');"></div>
+        <div class="bg-overlay"></div>
+
+        <div class="about-pages" id="about-pages">
+
+            <!-- Page 1: Introduction -->
+            <div class="about-page active" data-page="0">
+                <div class="about-page-label">01 / Introduction</div>
+                <div class="reveal-item">
+                    <div class="section-title">About <span>Me</span></div>
+                    <div class="section-divider"></div>
+                </div>
+                <div class="reveal-item">
+                    <p class="about-text">
+                        <strong>Hi, I'm Nabil Syahmi</strong> — I am a dedicated, responsible, and hardworking son, student and individual who is always eager to learn new things and improve my knowledge and skills. I enjoy taking on new challenges because they help me grow both personally and professionally. I am a quick learner who can adapt to different situations and work environments effectively.
+                    </p>
+                </div>
+                <div class="reveal-item">
+                    <p class="about-text">
+                        I always strive to give my best effort in everything I do and continuously seek opportunities to develop myself and contribute positively in my life.
+                    </p>
+                </div>
+                <div class="about-grid">
+                    <div class="about-grid-item reveal-item">
+                        <span class="number">11/12/2005</span><span class="label">Birthday</span>
+                    </div>
+                    <div class="about-grid-item reveal-item">
+                        <span class="number">Shah Alam, Selangor</span> 
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 2: Personality & Interests -->
+            <div class="about-page" data-page="1">
+                <div class="about-page-label">02 / Personality &amp; Interests</div>
+                <div class="reveal-item">
+                    <div class="section-title">What <span>Drives Me</span></div>
+                    <div class="section-divider"></div>
+                </div>
+                <div class="reveal-item">
+                    <p class="about-text">
+                       "When Allah give you <strong>a new beginning</strong>. Do not repeat old mistakes."
+                    </p>
+                </div>
+                <div class="reveal-item">
+                    <p class="about-text" style="margin-bottom:0.6rem;">Things I genuinely love:</p>
+                    <div class="tag-row">
+                        <span class="tag">📸 Photography</span>
+                        <span class="tag">🎵 Music</span>
+                        <span class="tag">✈️ Travelling</span>
+                        <span class="tag">⚽ Sport</span>
+                        <span class="tag">🍜 Good Food</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 3: Skills -->
+            <div class="about-page" data-page="2">
+                <div class="about-page-label">03 / Skills</div>
+                <div class="reveal-item">
+                    <div class="section-title">My <span>Skills</span></div>
+                    <div class="section-divider"></div>
+                </div>
+                <div class="skill-list">
+                    <div class="skill-row reveal-item">
+                        <div class="skill-meta"><span class="skill-name">Negotiating &amp; Debating</span><span class="skill-pct">90%</span></div>
+                        <div class="skill-track"><div class="skill-fill" style="--w:90%"></div></div>
+                    </div>
+                    <div class="skill-row reveal-item">
+                        <div class="skill-meta"><span class="skill-name">Multi-language</span><span class="skill-pct">60%</span></div>
+                        <div class="skill-track"><div class="skill-fill" style="--w:80%"></div></div>
+                    </div>
+                    <div class="skill-row reveal-item">
+                        <div class="skill-meta"><span class="skill-name">Photography &amp; Videography</span><span class="skill-pct">85%</span></div>
+                        <div class="skill-track"><div class="skill-fill" style="--w:85%"></div></div>
+                    </div>
+                    <div class="skill-row reveal-item">
+                        <div class="skill-meta"><span class="skill-name">Quran Hafazan</span><span class="skill-pct">70%</span></div>
+                        <div class="skill-track"><div class="skill-fill" style="--w:70%"></div></div>
+                    </div>
+                    <div class="skill-row reveal-item">
+                        <div class="skill-meta"><span class="skill-name">Branding &amp; Strategy</span><span class="skill-pct">75%</span></div>
+                        <div class="skill-track"><div class="skill-fill" style="--w:75%"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 4: Fun Facts -->
+            <div class="about-page" data-page="3">
+                <div class="about-page-label">04 / Fun Facts</div>
+                <div class="reveal-item">
+                    <div class="section-title">Random <span>Facts</span></div>
+                    <div class="section-divider"></div>
+                </div>
+                <ul class="values-list">
+                    <li class="reveal-item"><i class="fas fa-sun"></i><span>Funniest person</span></li>
+                    <li class="reveal-item"><i class="fas fa-smile"></i><span>Happy go lucky</span></li>
+                    <li class="reveal-item"><i class="fas fa-map-marked-alt"></i><span>Enjoy learning new things</span></li>
+                    <li class="reveal-item"><i class="fas fa-guitar"></i><span>Like new challenges</span></li>
+                    <li class="reveal-item"><i class="fas fa-film"></i><span>Hyper person</span></li>
+                    <li class="reveal-item"><i class="fas fa-clock"></i><span>Responsible person</span></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="about-dots" id="about-dots">
+            <div class="about-dot active"></div>
+            <div class="about-dot"></div>
+            <div class="about-dot"></div>
+            <div class="about-dot"></div>
+        </div>
+    </section>
+
+    <!-- BACKGROUND — replace background_bg.jpg with your photo filename -->
+    <section id="background" class="section-card" style="padding:0;">
+        <div class="bg-layer" style="background-image: url('images/nabil_4.png');"></div>
+        <div class="bg-overlay"></div>
+
+        <div class="bg-pages" id="bg-pages">
+
+            <!-- BG Page 1: Education -->
+            <div class="bg-page active" data-bgpage="0">
+                <div class="bg-page-label">01 / Education</div>
+                <div class="reveal-item">
+                    <div class="section-title">Education</div>
+                    <div class="section-divider"></div>
+                </div>
+                <ul class="timeline">
+                    <li class="reveal-item">
+                        <div class="tl-dot"><i class="fas fa-circle"></i></div>
+                        <div class="tl-body">
+                            <div class="tl-year">2012-2017</div>
+                            <div class="tl-title">Ujian Percapaian Sekolah Rendah<div>
+                            <div class="tl-sub">Sekolah Rendah Seksyen 242 Shah Alam Selangor</div>
+                        </div>
+                    </li>
+                    <li class="reveal-item">
+                        <div class="tl-dot"><i class="fas fa-circle"></i></div>
+                        <div class="tl-body">
+                            <div class="tl-year">2018 – 2022</div>
+                            <div class="tl-title">Sijil Pelajaran Malaysia</div>
+                            <div class="tl-sub">SMK Seksyen 242</div>
+                            <div class="tl-desc">Student Body Vice-President</div>
+                        </div>
+                    </li>
+                    <li class="reveal-item">
+                        <div class="tl-dot"><i class="fas fa-circle"></i></div>
+                        <div class="tl-body">
+                            <div class="tl-year">2024 – 2026</div>
+                            <div class="tl-title">Diploma in Information Management</div>
+                            <div class="tl-sub">UiTM Campus Rembau</div>
+                            <div class="tl-desc">Active in multimedia club and photography society. </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- BG Page 2: Work Experience -->
+            <div class="bg-page" data-bgpage="1">
+                <div class="bg-page-label">02 / Work Experience</div>
+                <div class="reveal-item">
+                    <div class="section-title">Experience</div>
+                    <div class="section-divider"></div>
+                </div>
+                <ul class="timeline">
+                    <li class="reveal-item">
+                        <div class="tl-dot"><i class="fas fa-circle"></i></div>
+                        <div class="tl-body">
+                            <div class="tl-year">2026 – Present</div>
+                            <div class="tl-title">Muezzin</div>
+                            <div class="tl-sub">UITM Seremban 2</div>
+                        </div>
+                    </li>
+                    <li class="reveal-item">
+                        <div class="tl-dot"><i class="fas fa-circle"></i></div>
+                        <div class="tl-body">
+                            <div class="tl-year">2022 – 2024</div>
+                            <div class="tl-title">Front Desk Clerk</div>
+                            <div class="tl-sub">Selangor Football Club</div>
+                        </div>
+                    </li>
+                    <li class="reveal-item">
+                        <div class="tl-dot"><i class="fas fa-circle"></i></div>
+                        <div class="tl-body">
+                            <div class="tl-year">2021 – 2022</div>
+                            <div class="tl-title">Football assistant coach (part-time)</div>
+                            <div class="tl-sub">Soccer Tiger U18</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="bg-dots" id="bg-dots">
+            <div class="bg-dot active"></div>
+            <div class="bg-dot"></div>
+        </div>
+    </section>
+
+    <!-- FRIENDS — replace friend_1.jpg … friend_6.jpg with your actual photo filenames -->
+    <section id="friends" class="section-card">
+
+        <!-- Title overlay -->
+        <div class="friends-header reveal-item">
+            <div class="section-title">Friends</div>
+            <div class="section-divider"></div>
+        </div>
+
+        <!-- Photo collage — swap src filenames with your own photos -->
+        <div class="collage">
+            <div class="collage-item reveal-item">
+                <img src="images/nabil_friend_1.png" alt="friend_1" onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-image\'></i><span>images/nabil_friend_1.jpg</span></div><div class=\'friend-name\'>friend_1</div>'">
+                <div class="friend-name"></div>
+            </div>
+            <div class="collage-item reveal-item">
+                <img src="images/nabil_friend_2.png" alt="friend_2" onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-image\'></i><span>images/nabil_friend_2.png</span></div><div class=\'friend-name\'>friend_2</div>'">
+                <div class="friend-name"></div>
+            </div>
+            <div class="collage-item reveal-item">
+                <img src="images/nabil_friend_3.png" alt="friend_3" onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-image\'></i><span>images/nabil_friend_3.png</span></div><div class=\'friend-name\'>friend_3</div>'">
+                <div class="friend-name"></div>
+            </div>
+            <div class="collage-item reveal-item">
+                <img src="images/nabil_family_1.png" alt="friend_4" onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-image\'></i><span>images/nabil_family_1.png</span></div><div class=\'friend-name\'>friend_4</div>'">
+                <div class="friend-name"></div>
+            </div>
+            <div class="collage-item reveal-item">
+                <img src="images/nabil_food.png" alt="friend_5" onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-image\'></i><span>images/nabil_food.png</span></div><div class=\'friend-name\'>friend_5</div>'">
+                <div class="friend-name"></div>
+            </div>
+            <div class="collage-item reveal-item">
+                <img src="images/nabil_friend_1.png" alt="friend_6" onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-image\'></i><span>friend_6.jpg</span></div><div class=\'friend-name\'>friend_6</div>'">
+                <div class="friend-name"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ACHIEVEMENTS — replace achievements_bg.jpg with your photo filename -->
+    <section id="achievements" class="section-card">
+        <div class="bg-layer" style="background-image: url('images/nabil_3.png');"></div>
+        <div class="bg-overlay"></div>
+        <div class="reveal-item">
+            <div class="section-title">Achievements</div>
+            <div class="section-divider"></div>
+        </div>
+        <div class="reveal-item">
+            <p style="color:#aaa;margin-bottom:1.5rem;font-size:1.1rem;">Milestones that mark the path.</p>
+        </div>
+        <ul class="achievement-list">
+            <li class="reveal-item"><i class="fas fa-trophy" style="color:#888;margin-right:12px;"></i> Top scorer MSS Selangor 2017</li>
+            <li class="reveal-item"><i class="fas fa-rocket" style="color:#888;margin-right:12px;"></i> Top 7 DIY Project peringkat kebangsaan 2019</li>
+            <li class="reveal-item"><i class="fas fa-code" style="color:#888;margin-right:12px;"></i>  Honorable mention in good academic performance in 2021</li>
+            <li class="reveal-item"><i class="fas fa-globe" style="color:#888;margin-right:12px;"></i> MC at 5 local event conferences</li>
+        </ul>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section-card">
+        <div class="bg-layer" style="background-image: url('images/nabil_5.png');"></div>
+        <div class="bg-overlay"></div>
+        <div class="reveal-item">
+            <div class="section-title">Get In <span>Touch</span></div>
+            <div class="section-divider"></div>
+        </div>
+        <div class="reveal-item">
+            <p style="color:#666; margin-bottom:2.5rem; font-size:1rem; letter-spacing:0.02em;">
+                Reach out through any of the channels below.
+            </p>
+        </div>
+        <div class="contact-grid">
+
+            <!-- WhatsApp — replace the number -->
+            <a class="contact-card whatsapp reveal-item" href="https://wa.me/601119363712" target="_blank" rel="noopener">
+                <i class="fab fa-whatsapp card-icon"></i>
+                <span class="card-label">WhatsApp</span>
+                <span class="card-sub">+6011-1936 3712</span>
+            </a>
+
+            <!-- Email — replace address -->
+            <a class="contact-card email reveal-item" href="mailto:nabilsyahmi1411@gmail.com">
+                <i class="fas fa-envelope card-icon"></i>
+                <span class="card-label">Email</span>
+                <span class="card-sub"nabilsyahmi1411@gmail.com</span>
+            </a>
+
+            <!-- Instagram — replace username -->
+            <a class="contact-card instagram reveal-item" href="https://www.instagram.com/itszzbilzz_?igsh=MWYzYWNneHp0MGozbw%3D%3D&utm_source=qr" target="_blank" rel="noopener">
+                <i class="fab fa-instagram card-icon"></i>
+                <span class="card-label">Instagram</span>
+                <span class="card-sub">@itzzbillzz_</span>
+            </a>
+
+            <!-- Resume / CV — replace with your actual file path -->
+            
+
+        </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+(function () {
+    'use strict';
+
+    const wrap        = document.getElementById('sections-wrap');
+    const progressBar = document.getElementById('progressBar');
+    const sections    = Array.from(document.querySelectorAll('.section-card'));
+    const total       = sections.length;
+
+    const STAGGER_MS = 120;
+    const ANIM_MS    = 600;
+    const SLIDE_MS   = 700;
+
+    let current       = 0;
+    let locked        = false;
+    let currentOffset = 0;
+
+    // About sub-pages
+    const aboutPages  = Array.from(document.querySelectorAll('.about-page'));
+    const aboutDots   = Array.from(document.querySelectorAll('.about-dot'));
+    const ABOUT_IDX   = 1;
+    let aboutPage     = 0;
+    const aboutTotal  = aboutPages.length;
+
+    // Background sub-pages
+    const bgPages  = Array.from(document.querySelectorAll('.bg-page'));
+    const bgDots   = Array.from(document.querySelectorAll('.bg-dot'));
+    const BG_IDX   = 2;
+    let bgPage     = 0;
+    const bgTotal  = bgPages.length;
+
+    function revealItems(items) {
+        items.forEach((item, i) => {
+            item.style.transitionDelay = (i * STAGGER_MS) + 'ms';
+            void item.offsetWidth;
+            item.classList.add('visible');
+            // Animate skill bars
+            item.querySelectorAll('.skill-fill').forEach(b => b.classList.add('animate'));
+        });
+    }
+
+    function hideItems(items) {
+        items.forEach(item => {
+            item.style.transitionDelay = '0ms';
+            item.style.transition = 'none';
+            item.classList.remove('visible');
+            item.querySelectorAll('.skill-fill').forEach(b => b.classList.remove('animate'));
+            requestAnimationFrame(() => requestAnimationFrame(() => { item.style.transition = ''; }));
+        });
+    }
+
+    function showAboutPage(idx) {
+        hideItems(aboutPages[aboutPage].querySelectorAll('.reveal-item'));
+        aboutPages[aboutPage].classList.remove('active');
+        aboutPage = idx;
+        aboutPages[aboutPage].classList.add('active');
+        aboutDots.forEach((d, i) => d.classList.toggle('active', i === aboutPage));
+        revealItems(aboutPages[aboutPage].querySelectorAll('.reveal-item'));
+    }
+
+    function showBgPage(idx) {
+        hideItems(bgPages[bgPage].querySelectorAll('.reveal-item'));
+        bgPages[bgPage].classList.remove('active');
+        bgPage = idx;
+        bgPages[bgPage].classList.add('active');
+        bgDots.forEach((d, i) => d.classList.toggle('active', i === bgPage));
+        revealItems(bgPages[bgPage].querySelectorAll('.reveal-item'));
+    }
+
+    function revealSection(idx) {
+        if (idx === ABOUT_IDX) { revealItems(aboutPages[aboutPage].querySelectorAll('.reveal-item')); return; }
+        if (idx === BG_IDX)    { revealItems(bgPages[bgPage].querySelectorAll('.reveal-item')); return; }
+        revealItems(sections[idx].querySelectorAll('.reveal-item'));
+    }
+
+    function hideSection(idx) {
+        if (idx === ABOUT_IDX) { hideItems(aboutPages[aboutPage].querySelectorAll('.reveal-item')); return; }
+        if (idx === BG_IDX)    { hideItems(bgPages[bgPage].querySelectorAll('.reveal-item')); return; }
+        hideItems(sections[idx].querySelectorAll('.reveal-item'));
+    }
+
+    function slideTo(idx, onDone) {
+        const targetY = idx * window.innerHeight;
+        const startY  = currentOffset;
+        const dist    = targetY - startY;
+        const startT  = performance.now();
+        function tick(now) {
+            const t = Math.min(1, (now - startT) / SLIDE_MS);
+            const e = t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2;
+            currentOffset = startY + dist * e;
+            wrap.style.transform = `translateY(${-currentOffset}px)`;
+            if (t < 1) { requestAnimationFrame(tick); }
+            else { currentOffset = targetY; wrap.style.transform = `translateY(${-targetY}px)`; if (onDone) onDone(); }
+        }
+        requestAnimationFrame(tick);
+    }
+
+    function updateProgress() {
+        let pos = current;
+        if (current === ABOUT_IDX) pos += aboutPage / aboutTotal;
+        if (current === BG_IDX)    pos += bgPage / bgTotal;
+        progressBar.style.width = Math.min(100, (pos / (total - 1)) * 100) + '%';
+        backToTop.classList.toggle('visible', current > 0);
+    }
+
+    function goTo(idx) {
+        if (idx < 0 || idx >= total || locked) return;
+
+        // Inside about — cycle sub-pages
+        if (current === ABOUT_IDX) {
+            if (idx > current && aboutPage < aboutTotal - 1) {
+                locked = true;
+                showAboutPage(aboutPage + 1);
+                const n = aboutPages[aboutPage].querySelectorAll('.reveal-item').length;
+                setTimeout(() => { locked = false; }, n * STAGGER_MS + ANIM_MS + 80);
+                updateProgress(); return;
+            }
+            if (idx < current && aboutPage > 0) {
+                locked = true;
+                showAboutPage(aboutPage - 1);
+                const n = aboutPages[aboutPage].querySelectorAll('.reveal-item').length;
+                setTimeout(() => { locked = false; }, n * STAGGER_MS + ANIM_MS + 80);
+                updateProgress(); return;
+            }
+            if (idx > current) aboutPage = 0;
+        }
+
+        // Inside background — cycle sub-pages
+        if (current === BG_IDX) {
+            if (idx > current && bgPage < bgTotal - 1) {
+                locked = true;
+                showBgPage(bgPage + 1);
+                const n = bgPages[bgPage].querySelectorAll('.reveal-item').length;
+                setTimeout(() => { locked = false; }, n * STAGGER_MS + ANIM_MS + 80);
+                updateProgress(); return;
+            }
+            if (idx < current && bgPage > 0) {
+                locked = true;
+                showBgPage(bgPage - 1);
+                const n = bgPages[bgPage].querySelectorAll('.reveal-item').length;
+                setTimeout(() => { locked = false; }, n * STAGGER_MS + ANIM_MS + 80);
+                updateProgress(); return;
+            }
+            if (idx > current) bgPage = 0;
+        }
+
+        locked = true;
+        const prev = current;
+        current = idx;
+        updateProgress();
+
+        slideTo(idx, () => {
+            hideSection(prev);
+            if (idx !== 0) revealSection(idx);
+            if (prev === ABOUT_IDX && idx < prev) {
+                aboutPages.forEach((p, i) => p.classList.toggle('active', i === 0));
+                aboutDots.forEach((d, i)  => d.classList.toggle('active', i === 0));
+                aboutPage = 0;
+            }
+            if (prev === BG_IDX && idx < prev) {
+                bgPages.forEach((p, i) => p.classList.toggle('active', i === 0));
+                bgDots.forEach((d, i)   => d.classList.toggle('active', i === 0));
+                bgPage = 0;
+            }
+            const n = idx === ABOUT_IDX ? aboutPages[aboutPage].querySelectorAll('.reveal-item').length
+                    : idx === BG_IDX    ? bgPages[bgPage].querySelectorAll('.reveal-item').length
+                    : sections[idx].querySelectorAll('.reveal-item').length;
+            setTimeout(() => { locked = false; }, n * STAGGER_MS + ANIM_MS + 100);
+        });
+    }
+
+    // Wheel
+    let wheelCooldown = false;
+    function onWheel(e) {
+        e.preventDefault();
+        if (locked || wheelCooldown) return;
+        wheelCooldown = true;
+        setTimeout(() => { wheelCooldown = false; }, 300);
+        goTo(current + (e.deltaY > 0 ? 1 : -1));
+    }
+
+    // Touch
+    let touchStartY = 0;
+    function onTouchStart(e) { touchStartY = e.touches[0].clientY; }
+    function onTouchEnd(e) {
+        if (locked) return;
+        const dy = touchStartY - e.changedTouches[0].clientY;
+        if (Math.abs(dy) < 40) return;
+        goTo(current + (dy > 0 ? 1 : -1));
+    }
+
+    // Keyboard
+    document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1); }
+        if (e.key === 'ArrowUp'   || e.key === 'PageUp')   { e.preventDefault(); goTo(current - 1); }
+    });
+
+    // Nav
+    document.querySelectorAll('.top-nav a[data-section]').forEach(a => {
+        a.addEventListener('click', e => {
+            e.preventDefault();
+            locked = false;
+            aboutPage = 0; bgPage = 0;
+            aboutPages.forEach((p, i) => p.classList.toggle('active', i === 0));
+            aboutDots.forEach((d, i)  => d.classList.toggle('active', i === 0));
+            bgPages.forEach((p, i) => p.classList.toggle('active', i === 0));
+            bgDots.forEach((d, i)   => d.classList.toggle('active', i === 0));
+            goTo(parseInt(a.dataset.section, 10));
+        });
+    });
+
+    // Init — hide all non-hero sections
+    for (let i = 1; i < total; i++) {
+        sections[i].querySelectorAll('.reveal-item').forEach(item => {
+            item.style.transition = 'none'; item.classList.remove('visible');
+            requestAnimationFrame(() => requestAnimationFrame(() => { item.style.transition = ''; }));
+        });
+    }
+    aboutPages.forEach((p, i) => p.classList.toggle('active', i === 0));
+    aboutDots.forEach((d, i)  => d.classList.toggle('active', i === 0));
+    bgPages.forEach((p, i) => p.classList.toggle('active', i === 0));
+    bgDots.forEach((d, i)   => d.classList.toggle('active', i === 0));
+
+    const backToTop = document.getElementById('backToTop');
+    backToTop.addEventListener('click', () => {
+        locked = false;
+        aboutPage = 0; bgPage = 0;
+        aboutPages.forEach((p, i) => p.classList.toggle('active', i === 0));
+        aboutDots.forEach((d, i)  => d.classList.toggle('active', i === 0));
+        bgPages.forEach((p, i) => p.classList.toggle('active', i === 0));
+        bgDots.forEach((d, i)   => d.classList.toggle('active', i === 0));
+        goTo(0);
+    });
+
+    wrap.style.transform = 'translateY(0px)';
+    progressBar.style.width = '0%';
+    locked = false;
+
+    const app = document.getElementById('app');
+    app.addEventListener('wheel',      onWheel,      { passive: false });
+    app.addEventListener('touchstart', onTouchStart, { passive: true  });
+    app.addEventListener('touchend',   onTouchEnd,   { passive: true  });
+
+})();
+</script>
+</body>
+</html>
