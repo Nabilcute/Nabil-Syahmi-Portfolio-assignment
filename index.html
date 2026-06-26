@@ -54,7 +54,6 @@
             position: relative; overflow: hidden;
         }
 
-        /* Background image layers */
         .bg-layer {
             position: absolute; inset: 0;
             background-size: cover; background-position: center;
@@ -137,7 +136,6 @@
             color: #555; margin-bottom: 0.6rem;
         }
 
-        /* Shared */
         .section-title {
             font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 600;
             letter-spacing: -0.02em; margin-bottom: 1.5rem;
@@ -181,7 +179,6 @@
         }
         .values-list li i { color: #666; font-size: 1rem; }
 
-        /* Skill bars */
         .skill-list { max-width: 680px; width: 100%; }
         .skill-row { margin-bottom: 1.2rem; }
         .skill-meta { display: flex; justify-content: space-between; margin-bottom: 6px; }
@@ -198,7 +195,8 @@
         }
         .skill-fill.animate { width: var(--w); }
 
-        /* Timeline (for Background section) */
+        /* Background section */
+        #background { padding: 0; }
         .bg-pages { position: relative; width: 100%; height: 100%; }
         .bg-page {
             position: absolute; inset: 0; padding: 4rem 3rem;
@@ -252,22 +250,27 @@
         .tl-sub { font-size: 0.9rem; color: #888; margin-bottom: 4px; }
         .tl-desc { font-size: 0.88rem; color: #666; line-height: 1.6; }
 
-        .placeholder-content { font-size: 1.1rem; color: #aaa; max-width: 700px; line-height: 1.7; }
-        .placeholder-content i { color: #555; margin-right: 0.5rem; }
-        .placeholder-content p { margin-bottom: 0.8rem; }
+        /* Friends collage */
+        #friends { padding: 0 !important; display: flex; flex-direction: column; }
 
-        /* Friends collage — full bleed, no padding on section */
-        #friends { padding: 0 !important; }
+        .friends-section-inner {
+            position: relative;
+            flex: 1;
+            margin-top: 5rem;
+            overflow: hidden;
+        }
 
         .collage {
-            position: absolute; inset: 0;
+            position: absolute;
+            inset: 0.75rem;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(2, 1fr);
-            gap: 3px;
+            gap: 4px;
+            border-radius: 10px;
+            overflow: hidden;
         }
 
-        /* Varied sizes via spanning */
         .collage-item:nth-child(1) { grid-column: 1 / 3; grid-row: 1 / 2; }
         .collage-item:nth-child(2) { grid-column: 3 / 4; grid-row: 1 / 2; }
         .collage-item:nth-child(3) { grid-column: 4 / 5; grid-row: 1 / 3; }
@@ -293,7 +296,18 @@
             filter: brightness(1);
         }
 
-        /* Placeholder when no image set */
+        /* Video frame (5th collage item) */
+        .collage-item .collage-video {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: block;
+            filter: brightness(0.85);
+            transition: filter 0.5s ease;
+        }
+        .collage-item:hover .collage-video {
+            filter: brightness(1);
+        }
+
         .collage-item .photo-placeholder {
             width: 100%; height: 100%;
             display: flex; flex-direction: column;
@@ -304,7 +318,6 @@
         }
         .collage-item .photo-placeholder i { font-size: 1.6rem; color: #2a2a2a; }
 
-        /* Name overlay on hover */
         .collage-item .friend-name {
             position: absolute; bottom: 0; left: 0; right: 0;
             padding: 2rem 1.2rem 1rem;
@@ -316,7 +329,6 @@
         }
         .collage-item:hover .friend-name { opacity: 1; transform: translateY(0); }
 
-        /* Friends title overlay — top left */
         .friends-header {
             position: absolute; top: 0; left: 0; right: 0;
             padding: 1.5rem 2rem;
@@ -364,7 +376,6 @@
         .contact-card.whatsapp::before  { background: radial-gradient(ellipse at center, rgba(37,211,102,0.2) 0%, transparent 70%); }
         .contact-card.email::before     { background: radial-gradient(ellipse at center, rgba(234,67,53,0.2) 0%, transparent 70%); }
         .contact-card.instagram::before { background: radial-gradient(ellipse at 50% 60%, rgba(193,53,132,0.25) 0%, rgba(224,103,59,0.15) 50%, transparent 70%); }
-        
 
         .contact-card:hover { transform: translateY(-5px); }
         .contact-card:hover::before { opacity: 1; }
@@ -398,20 +409,131 @@
         @media (max-width: 700px) { .contact-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 380px) { .contact-grid { grid-template-columns: 1fr; } }
 
-        /* Back to top button */
-        .back-to-top {
+        /* ============================================
+           BOTTOM-RIGHT CONTROLS CLUSTER
+           back-to-top + music player stacked vertically
+           ============================================ */
+        .bottom-right-cluster {
             position: fixed; bottom: 2rem; right: 2rem;
+            display: flex; flex-direction: column; align-items: center;
+            gap: 10px; z-index: 800;
+        }
+
+        /* Music player pill */
+        .music-player {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(15,15,15,0.88);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 40px;
+            padding: 8px 14px 8px 10px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.45);
+            opacity: 0; pointer-events: none;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            min-width: 0;
+            max-width: 220px;
+        }
+        .music-player.visible {
+            opacity: 1; pointer-events: auto; transform: translateY(0);
+        }
+
+        .music-btn {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            border: 2px solid rgba(255,255,255,0.14);
+            color: rgba(255,255,255,0.7);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; flex-shrink: 0;
+            transition: background 0.35s ease, color 0.35s ease,
+                        border-color 0.35s ease, box-shadow 0.35s ease,
+                        transform 0.15s ease;
+            font-size: 1rem;
+            line-height: 1;
+        }
+        /* Paused / default state hover */
+        .music-btn:hover {
+            background: rgba(255,255,255,0.16);
+            color: #fff;
+            border-color: rgba(255,255,255,0.3);
+        }
+        .music-btn:active { transform: scale(0.88); }
+
+        /* ── PLAYING state: red chili button with orange frame ── */
+        .music-player.playing .music-btn {
+            background: #c0392b;
+            border-color: #ff7300;
+            color: #fff;
+            box-shadow: 0 0 0 3px rgba(255,115,0,0.28),
+                        0 0 18px rgba(192,57,43,0.55);
+        }
+        .music-player.playing .music-btn:hover {
+            background: #e74c3c;
+            border-color: #ff9500;
+            box-shadow: 0 0 0 4px rgba(255,149,0,0.35),
+                        0 0 24px rgba(231,76,60,0.65);
+        }
+
+        /* Chili spin-in when state flips */
+        @keyframes chili-pop {
+            0%   { transform: scale(0.5) rotate(-30deg); opacity: 0; }
+            60%  { transform: scale(1.2) rotate(8deg);  opacity: 1; }
+            100% { transform: scale(1)   rotate(0deg);  opacity: 1; }
+        }
+        .music-player.playing .music-btn .chili-emoji {
+            display: inline-block;
+            animation: chili-pop 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;
+        }
+
+        /* Progress bar turns orange while playing */
+        .music-player.playing .music-progress-fill {
+            background: linear-gradient(90deg, #ff7300, #c0392b);
+        }
+
+        .music-info {
+            display: flex; flex-direction: column;
+            overflow: hidden; flex: 1;
+            min-width: 0;
+        }
+        .music-title {
+            font-size: 0.72rem; font-weight: 500; color: #fff;
+            white-space: nowrap; overflow: hidden;
+            text-overflow: ellipsis; letter-spacing: 0.02em;
+            line-height: 1.3;
+        }
+        .music-progress-wrap {
+            margin-top: 4px; position: relative;
+        }
+        .music-progress-bg {
+            height: 2px; background: rgba(255,255,255,0.1);
+            border-radius: 2px; overflow: hidden;
+        }
+        .music-progress-fill {
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg, #fff, #aaa);
+            border-radius: 2px;
+            transition: width 0.5s linear, background 0.35s ease;
+        }
+        .music-time {
+            font-size: 0.62rem; color: rgba(255,255,255,0.3);
+            margin-top: 2px; letter-spacing: 0.02em;
+        }
+
+        /* Back-to-top button */
+        .back-to-top {
             width: 44px; height: 44px;
             border-radius: 50%;
             background: rgba(255,255,255,0.06);
             border: 1px solid rgba(255,255,255,0.12);
             color: rgba(255,255,255,0.5);
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; z-index: 800;
+            cursor: pointer;
             opacity: 0; pointer-events: none;
             transform: translateY(10px);
             transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
             backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
         }
         .back-to-top.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
         .back-to-top:hover { background: rgba(255,255,255,0.14); color: #fff; border-color: rgba(255,255,255,0.3); }
@@ -423,28 +545,61 @@
         }
         .reveal-item.visible { opacity: 1; transform: translateY(0); }
 
-        .section-card:not(#about) { padding: 4rem 3rem; }
+        .section-card:not(#about):not(#background) { padding: 4rem 3rem; }
 
         @media (max-width: 900px) {
-            .section-card:not(#about) { padding: 2.5rem 1.5rem; }
+            .section-card:not(#about):not(#background) { padding: 2.5rem 1.5rem; }
             .about-page { padding: 2.5rem 1.5rem; }
+            .bg-page { padding: 2.5rem 1.5rem; }
             .hero-content { flex-direction: column; gap: 1rem; align-items: center; text-align: center; }
             .top-nav { gap: 2rem; }
-            .about-grid, .friend-grid { grid-template-columns: 1fr 1fr; }
+            .about-grid { grid-template-columns: 1fr 1fr; }
+            .music-player { max-width: 180px; }
         }
         @media (max-width: 550px) {
-            .section-card:not(#about) { padding: 2rem 1rem; }
+            .section-card:not(#about):not(#background) { padding: 2rem 1rem; }
             .about-page { padding: 2rem 1rem; }
+            .bg-page { padding: 2rem 1rem; }
             .top-nav { gap: 1.2rem; }
             .top-nav a { font-size: 0.75rem; }
-            .about-grid, .friend-grid { grid-template-columns: 1fr; }
+            .about-grid { grid-template-columns: 1fr; }
+            .bottom-right-cluster { bottom: 1.2rem; right: 1.2rem; }
+            .music-player { max-width: 160px; padding: 7px 10px 7px 8px; }
         }
     </style>
 </head>
 <body>
 
+<!-- Hidden audio element — replace src with your mp3 path -->
+<audio id="bgMusic" loop preload="metadata">
+    <source src="audio/timeless.mp3" type="audio/mpeg">
+    <source src="audio/timeless.ogg" type="audio/ogg">
+</audio>
+
 <div class="progress-bar" id="progressBar"></div>
-<button class="back-to-top" id="backToTop" aria-label="Back to top"><i class="fas fa-chevron-up"></i></button>
+
+<!-- Bottom-right cluster: music player + back-to-top -->
+<div class="bottom-right-cluster">
+    <!-- Music player pill -->
+    <div class="music-player" id="musicPlayer">
+        <button class="music-btn" id="musicBtn" aria-label="Play / Pause music">
+            <i class="fas fa-play" id="musicIcon"></i>
+        </button>
+        <div class="music-info">
+            <span class="music-title" id="musicTitle">Your Song Title</span>
+            <div class="music-progress-wrap">
+                <div class="music-progress-bg">
+                    <div class="music-progress-fill" id="musicProgressFill"></div>
+                </div>
+                <span class="music-time" id="musicTime">0:00 / 0:00</span>
+            </div>
+        </div>
+    </div>
+    <!-- Back to top -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+</div>
 
 <nav class="top-nav">
     <a href="#about"        data-section="1">About</a>
@@ -457,7 +612,7 @@
 <div id="app">
   <div id="sections-wrap">
 
-    <!-- HERO — replace nabil_1.png with your photo filename -->
+    <!-- HERO -->
     <section id="home" class="section-card hero-card">
         <div class="hero-content">
             <div class="left-block"><div class="life-of">Life Of</div></div>
@@ -469,14 +624,12 @@
         </div>
     </section>
 
-    <!-- ABOUT — replace about_bg.jpg with your photo filename -->
+    <!-- ABOUT -->
     <section id="about" class="section-card">
         <div class="bg-layer" style="background-image: url('images/nabil_2.jpeg');"></div>
         <div class="bg-overlay"></div>
 
         <div class="about-pages" id="about-pages">
-
-            <!-- Page 1: Introduction -->
             <div class="about-page active" data-page="0">
                 <div class="about-page-label">01 / Introduction</div>
                 <div class="reveal-item">
@@ -498,12 +651,11 @@
                         <span class="number">11/12/2005</span><span class="label">Birthday</span>
                     </div>
                     <div class="about-grid-item reveal-item">
-                        <span class="number">Shah Alam, Selangor</span> 
+                        <span class="number">Shah Alam, Selangor</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Page 2: Personality & Interests -->
             <div class="about-page" data-page="1">
                 <div class="about-page-label">02 / Personality &amp; Interests</div>
                 <div class="reveal-item">
@@ -527,7 +679,6 @@
                 </div>
             </div>
 
-            <!-- Page 3: Skills -->
             <div class="about-page" data-page="2">
                 <div class="about-page-label">03 / Skills</div>
                 <div class="reveal-item">
@@ -558,7 +709,6 @@
                 </div>
             </div>
 
-            <!-- Page 4: Fun Facts -->
             <div class="about-page" data-page="3">
                 <div class="about-page-label">04 / Fun Facts</div>
                 <div class="reveal-item">
@@ -574,7 +724,6 @@
                     <li class="reveal-item"><i class="fas fa-clock"></i><span>Responsible person</span></li>
                 </ul>
             </div>
-
         </div>
 
         <div class="about-dots" id="about-dots">
@@ -585,14 +734,12 @@
         </div>
     </section>
 
-    <!-- BACKGROUND — replace background_bg.jpg with your photo filename -->
-    <section id="background" class="section-card" style="padding:0;">
+    <!-- BACKGROUND -->
+    <section id="background" class="section-card">
         <div class="bg-layer" style="background-image: url('images/nabil_4.png');"></div>
         <div class="bg-overlay"></div>
 
         <div class="bg-pages" id="bg-pages">
-
-            <!-- BG Page 1: Education -->
             <div class="bg-page active" data-bgpage="0">
                 <div class="bg-page-label">01 / Education</div>
                 <div class="reveal-item">
@@ -604,7 +751,7 @@
                         <div class="tl-dot"><i class="fas fa-circle"></i></div>
                         <div class="tl-body">
                             <div class="tl-year">2012-2017</div>
-                            <div class="tl-title">Ujian Percapaian Sekolah Rendah<div>
+                            <div class="tl-title">Ujian Percapaian Sekolah Rendah</div>
                             <div class="tl-sub">Sekolah Rendah Seksyen 242 Shah Alam Selangor</div>
                         </div>
                     </li>
@@ -623,13 +770,12 @@
                             <div class="tl-year">2024 – 2026</div>
                             <div class="tl-title">Diploma in Information Management</div>
                             <div class="tl-sub">UiTM Campus Rembau</div>
-                            <div class="tl-desc">Active in multimedia club and photography society. </div>
+                            <div class="tl-desc">Active in multimedia club and photography society.</div>
                         </div>
                     </li>
                 </ul>
             </div>
 
-            <!-- BG Page 2: Work Experience -->
             <div class="bg-page" data-bgpage="1">
                 <div class="bg-page-label">02 / Work Experience</div>
                 <div class="reveal-item">
@@ -663,7 +809,6 @@
                     </li>
                 </ul>
             </div>
-
         </div>
 
         <div class="bg-dots" id="bg-dots">
@@ -672,45 +817,64 @@
         </div>
     </section>
 
-    <!-- FRIENDS — replace friend_1.jpg … friend_6.jpg with your actual photo filenames -->
+    <!-- FRIENDS -->
     <section id="friends" class="section-card">
-
-        <!-- Title overlay -->
         <div class="friends-header reveal-item">
             <div class="section-title">Friends</div>
             <div class="section-divider"></div>
         </div>
 
-        <!-- Photo collage — swap src filenames with your own photos -->
+        <div class="friends-section-inner">
         <div class="collage">
             <div class="collage-item reveal-item">
-                <img src="images/nabil_friend_1.png" alt="friend_1" onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-image\'></i><span>images/nabil_friend_1.jpg</span></div><div class=\'friend-name\'>friend_1</div>'">
+                <img src="images/nabil_friend_1.png" alt="friend_1" onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-image\'></i><span>nabil_friend_1.png</span></div>'">
                 <div class="friend-name"></div>
             </div>
             <div class="collage-item reveal-item">
-                <img src="images/nabil_friend_2.png" alt="friend_2" onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-image\'></i><span>images/nabil_friend_2.png</span></div><div class=\'friend-name\'>friend_2</div>'">
+                <img src="images/nabil_friend_2.png" alt="friend_2" onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-image\'></i><span>nabil_friend_2.png</span></div>'">
+                <div class="friend-name"></div>
+            </div>
+            <!-- Frame 3: VIDEO (autoplay when Friends section is active) -->
+            <div class="collage-item reveal-item" id="videoFrame">
+                <video
+                    class="collage-video"
+                    id="collageVideo"
+                    src="videos/nabil_vid.mp4"
+                    muted
+                    loop
+                    playsinline
+                    preload="metadata"
+                ></video>
                 <div class="friend-name"></div>
             </div>
             <div class="collage-item reveal-item">
-                <img src="images/nabil_friend_3.png" alt="friend_3" onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-image\'></i><span>images/nabil_friend_3.png</span></div><div class=\'friend-name\'>friend_3</div>'">
+                <img src="images/nabil_family_1.png" alt="friend_4" onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-image\'></i><span>nabil_family_1.png</span></div>'">
                 <div class="friend-name"></div>
             </div>
+
             <div class="collage-item reveal-item">
-                <img src="images/nabil_family_1.png" alt="friend_4" onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-image\'></i><span>images/nabil_family_1.png</span></div><div class=\'friend-name\'>friend_4</div>'">
+                <img src="images/nabil_food.png" alt="friend_5" onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-image\'></i><span>nabil_food.png</span></div>'">
                 <div class="friend-name"></div>
             </div>
+
+            <!-- Frame 6: VIDEO (autoplay when Friends section is active) -->
             <div class="collage-item reveal-item">
-                <img src="images/nabil_food.png" alt="friend_5" onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-image\'></i><span>images/nabil_food.png</span></div><div class=\'friend-name\'>friend_5</div>'">
-                <div class="friend-name"></div>
-            </div>
-            <div class="collage-item reveal-item">
-                <img src="images/nabil_friend_1.png" alt="friend_6" onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'><i class=\'fas fa-image\'></i><span>friend_6.jpg</span></div><div class=\'friend-name\'>friend_6</div>'">
+                <video
+                    class="collage-video"
+                    id="collageVideo2"
+                    src="videos/nabil_vid2.mp4"
+                    muted
+                    loop
+                    playsinline
+                    preload="metadata"
+                ></video>
                 <div class="friend-name"></div>
             </div>
         </div>
+        </div><!-- /friends-section-inner -->
     </section>
 
-    <!-- ACHIEVEMENTS — replace achievements_bg.jpg with your photo filename -->
+    <!-- ACHIEVEMENTS -->
     <section id="achievements" class="section-card">
         <div class="bg-layer" style="background-image: url('images/nabil_3.png');"></div>
         <div class="bg-overlay"></div>
@@ -724,7 +888,7 @@
         <ul class="achievement-list">
             <li class="reveal-item"><i class="fas fa-trophy" style="color:#888;margin-right:12px;"></i> Top scorer MSS Selangor 2017</li>
             <li class="reveal-item"><i class="fas fa-rocket" style="color:#888;margin-right:12px;"></i> Top 7 DIY Project peringkat kebangsaan 2019</li>
-            <li class="reveal-item"><i class="fas fa-code" style="color:#888;margin-right:12px;"></i>  Honorable mention in good academic performance in 2021</li>
+            <li class="reveal-item"><i class="fas fa-code" style="color:#888;margin-right:12px;"></i> Honorable mention in good academic performance in 2021</li>
             <li class="reveal-item"><i class="fas fa-globe" style="color:#888;margin-right:12px;"></i> MC at 5 local event conferences</li>
         </ul>
     </section>
@@ -743,31 +907,21 @@
             </p>
         </div>
         <div class="contact-grid">
-
-            <!-- WhatsApp — replace the number -->
             <a class="contact-card whatsapp reveal-item" href="https://wa.me/601119363712" target="_blank" rel="noopener">
                 <i class="fab fa-whatsapp card-icon"></i>
                 <span class="card-label">WhatsApp</span>
                 <span class="card-sub">+6011-1936 3712</span>
             </a>
-
-            <!-- Email — replace address -->
             <a class="contact-card email reveal-item" href="mailto:nabilsyahmi1411@gmail.com">
                 <i class="fas fa-envelope card-icon"></i>
                 <span class="card-label">Email</span>
-                <span class="card-sub"nabilsyahmi1411@gmail.com</span>
+                <span class="card-sub">nabilsyahmi1411@gmail.com</span>
             </a>
-
-            <!-- Instagram — replace username -->
             <a class="contact-card instagram reveal-item" href="https://www.instagram.com/itszzbilzz_?igsh=MWYzYWNneHp0MGozbw%3D%3D&utm_source=qr" target="_blank" rel="noopener">
                 <i class="fab fa-instagram card-icon"></i>
                 <span class="card-label">Instagram</span>
                 <span class="card-sub">@itzzbillzz_</span>
             </a>
-
-            <!-- Resume / CV — replace with your actual file path -->
-            
-
         </div>
     </section>
 
@@ -778,6 +932,7 @@
 (function () {
     'use strict';
 
+    /* ─── Scroll engine ─── */
     const wrap        = document.getElementById('sections-wrap');
     const progressBar = document.getElementById('progressBar');
     const sections    = Array.from(document.querySelectorAll('.section-card'));
@@ -791,26 +946,101 @@
     let locked        = false;
     let currentOffset = 0;
 
-    // About sub-pages
-    const aboutPages  = Array.from(document.querySelectorAll('.about-page'));
-    const aboutDots   = Array.from(document.querySelectorAll('.about-dot'));
-    const ABOUT_IDX   = 1;
-    let aboutPage     = 0;
-    const aboutTotal  = aboutPages.length;
+    const aboutPages = Array.from(document.querySelectorAll('.about-page'));
+    const aboutDots  = Array.from(document.querySelectorAll('.about-dot'));
+    const ABOUT_IDX  = 1;
+    let aboutPage    = 0;
+    const aboutTotal = aboutPages.length;
 
-    // Background sub-pages
-    const bgPages  = Array.from(document.querySelectorAll('.bg-page'));
-    const bgDots   = Array.from(document.querySelectorAll('.bg-dot'));
-    const BG_IDX   = 2;
-    let bgPage     = 0;
-    const bgTotal  = bgPages.length;
+    const bgPages = Array.from(document.querySelectorAll('.bg-page'));
+    const bgDots  = Array.from(document.querySelectorAll('.bg-dot'));
+    const BG_IDX  = 2;
+    let bgPage    = 0;
+    const bgTotal = bgPages.length;
 
+    const FRIENDS_IDX = 3;
+
+    /* ─── Video ─── */
+    const collageVideo  = document.getElementById('collageVideo');
+    const collageVideo2 = document.getElementById('collageVideo2');
+
+    function playVideo() {
+        if (collageVideo)  { collageVideo.currentTime  = 0; collageVideo.play().catch(() => {}); }
+        if (collageVideo2) { collageVideo2.currentTime = 0; collageVideo2.play().catch(() => {}); }
+    }
+    function pauseVideo() {
+        if (collageVideo)  collageVideo.pause();
+        if (collageVideo2) collageVideo2.pause();
+    }
+
+    /* ─── Music player ─── */
+    const audio           = document.getElementById('bgMusic');
+    const musicPlayer     = document.getElementById('musicPlayer');
+    const musicBtn        = document.getElementById('musicBtn');
+    const musicIcon       = document.getElementById('musicIcon');
+    const musicTitle      = document.getElementById('musicTitle');
+    const musicProgressFill = document.getElementById('musicProgressFill');
+    const musicTime       = document.getElementById('musicTime');
+
+    let isPlaying = false;
+
+    function formatTime(s) {
+        if (isNaN(s)) return '0:00';
+        const m = Math.floor(s / 60);
+        const sec = Math.floor(s % 60);
+        return m + ':' + (sec < 10 ? '0' : '') + sec;
+    }
+
+    function updateMusicUI() {
+        if (isPlaying) {
+            // Chili emoji button when playing
+            musicBtn.innerHTML = '<span class="chili-emoji">🌶️</span>';
+            musicPlayer.classList.add('playing');
+        } else {
+            // Regular play icon when paused
+            musicBtn.innerHTML = '<i class="fas fa-play" id="musicIcon"></i>';
+            musicPlayer.classList.remove('playing');
+        }
+    }
+
+    function toggleMusic() {
+        if (isPlaying) {
+            audio.pause();
+            isPlaying = false;
+        } else {
+            audio.play().then(() => {
+                isPlaying = true;
+                updateMusicUI();
+            }).catch(() => {});
+            isPlaying = true;
+        }
+        updateMusicUI();
+    }
+
+    musicBtn.addEventListener('click', toggleMusic);
+
+    audio.addEventListener('timeupdate', () => {
+        const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+        musicProgressFill.style.width = pct + '%';
+        musicTime.textContent = formatTime(audio.currentTime) + ' / ' + formatTime(audio.duration);
+    });
+
+    audio.addEventListener('loadedmetadata', () => {
+        musicTime.textContent = '0:00 / ' + formatTime(audio.duration);
+        // Try to read a title from the audio filename or set manually
+        const src = audio.currentSrc || '';
+        const file = src.split('/').pop().replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
+        if (file) musicTitle.textContent = file || 'Background Music';
+    });
+
+    audio.addEventListener('ended', () => { isPlaying = false; updateMusicUI(); });
+
+    /* ─── Reveal helpers ─── */
     function revealItems(items) {
         items.forEach((item, i) => {
             item.style.transitionDelay = (i * STAGGER_MS) + 'ms';
             void item.offsetWidth;
             item.classList.add('visible');
-            // Animate skill bars
             item.querySelectorAll('.skill-fill').forEach(b => b.classList.add('animate'));
         });
     }
@@ -855,6 +1085,7 @@
         hideItems(sections[idx].querySelectorAll('.reveal-item'));
     }
 
+    /* ─── Slide animation ─── */
     function slideTo(idx, onDone) {
         const targetY = idx * window.innerHeight;
         const startY  = currentOffset;
@@ -866,23 +1097,29 @@
             currentOffset = startY + dist * e;
             wrap.style.transform = `translateY(${-currentOffset}px)`;
             if (t < 1) { requestAnimationFrame(tick); }
-            else { currentOffset = targetY; wrap.style.transform = `translateY(${-targetY}px)`; if (onDone) onDone(); }
+            else {
+                currentOffset = targetY;
+                wrap.style.transform = `translateY(${-targetY}px)`;
+                if (onDone) onDone();
+            }
         }
         requestAnimationFrame(tick);
     }
 
+    /* ─── Progress & UI ─── */
     function updateProgress() {
         let pos = current;
         if (current === ABOUT_IDX) pos += aboutPage / aboutTotal;
         if (current === BG_IDX)    pos += bgPage / bgTotal;
         progressBar.style.width = Math.min(100, (pos / (total - 1)) * 100) + '%';
         backToTop.classList.toggle('visible', current > 0);
+        musicPlayer.classList.toggle('visible', current > 0);
     }
 
+    /* ─── Navigation ─── */
     function goTo(idx) {
         if (idx < 0 || idx >= total || locked) return;
 
-        // Inside about — cycle sub-pages
         if (current === ABOUT_IDX) {
             if (idx > current && aboutPage < aboutTotal - 1) {
                 locked = true;
@@ -901,7 +1138,6 @@
             if (idx > current) aboutPage = 0;
         }
 
-        // Inside background — cycle sub-pages
         if (current === BG_IDX) {
             if (idx > current && bgPage < bgTotal - 1) {
                 locked = true;
@@ -928,6 +1164,14 @@
         slideTo(idx, () => {
             hideSection(prev);
             if (idx !== 0) revealSection(idx);
+
+            // Video control: play on friends, pause when leaving
+            if (idx === FRIENDS_IDX) {
+                playVideo();
+            } else if (prev === FRIENDS_IDX) {
+                pauseVideo();
+            }
+
             if (prev === ABOUT_IDX && idx < prev) {
                 aboutPages.forEach((p, i) => p.classList.toggle('active', i === 0));
                 aboutDots.forEach((d, i)  => d.classList.toggle('active', i === 0));
@@ -945,7 +1189,7 @@
         });
     }
 
-    // Wheel
+    /* ─── Input events ─── */
     let wheelCooldown = false;
     function onWheel(e) {
         e.preventDefault();
@@ -955,7 +1199,6 @@
         goTo(current + (e.deltaY > 0 ? 1 : -1));
     }
 
-    // Touch
     let touchStartY = 0;
     function onTouchStart(e) { touchStartY = e.touches[0].clientY; }
     function onTouchEnd(e) {
@@ -965,13 +1208,11 @@
         goTo(current + (dy > 0 ? 1 : -1));
     }
 
-    // Keyboard
     document.addEventListener('keydown', e => {
         if (e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1); }
         if (e.key === 'ArrowUp'   || e.key === 'PageUp')   { e.preventDefault(); goTo(current - 1); }
     });
 
-    // Nav
     document.querySelectorAll('.top-nav a[data-section]').forEach(a => {
         a.addEventListener('click', e => {
             e.preventDefault();
@@ -985,7 +1226,7 @@
         });
     });
 
-    // Init — hide all non-hero sections
+    /* ─── Init ─── */
     for (let i = 1; i < total; i++) {
         sections[i].querySelectorAll('.reveal-item').forEach(item => {
             item.style.transition = 'none'; item.classList.remove('visible');
@@ -1005,6 +1246,7 @@
         aboutDots.forEach((d, i)  => d.classList.toggle('active', i === 0));
         bgPages.forEach((p, i) => p.classList.toggle('active', i === 0));
         bgDots.forEach((d, i)   => d.classList.toggle('active', i === 0));
+        pauseVideo();
         goTo(0);
     });
 
